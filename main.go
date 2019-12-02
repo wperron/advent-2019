@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"bufio"
+	"fmt"
+	"math"
 	"os"
 	"strconv"
-	"math"
 )
 
 func main() {
@@ -26,7 +26,7 @@ func main() {
 }
 
 func CalcFuel(mass int) int {
-	fuel := int(math.Floor(float64(mass)/3))-2
+	fuel := int(math.Floor(float64(mass)/3)) - 2
 	if fuel > 0 {
 		fuel += CalcFuel(fuel)
 	}
