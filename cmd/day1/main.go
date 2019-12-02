@@ -14,12 +14,14 @@ func main() {
 	scanner := bufio.NewScanner(handle)
 
 	var total int
+	masses := make(chan int)
 	for scanner.Scan() {
 		module, _ := strconv.Atoi(scanner.Text())
-		mass := CalcFuel(module)
-		total += mass
+		go func(i int) {
+			masses <- CalcFuel(i)
+		}(module)
 
-		fmt.Printf("Module: %d\tFuel: %d\n", module, mass)
+		total += <- masses
 	}
 	fmt.Printf("Total: %d", total)
 	os.Exit(0)
