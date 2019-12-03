@@ -44,13 +44,13 @@ func main() {
 			}(intcode, p)
 		}
 
-		answer := <- c
+		answer := <-c
 
 		fmt.Println("Answer is: ", answer)
 	}
 }
 
-func MakeRange(min int, max int) ([]int) {
+func MakeRange(min int, max int) []int {
 	res := make([]int, max-min)
 	for i := range res {
 		res[i] = min + i
@@ -58,7 +58,7 @@ func MakeRange(min int, max int) ([]int) {
 	return res
 }
 
-func Permutations(a []int, b []int) ([]intTuple) {
+func Permutations(a []int, b []int) []intTuple {
 	var permuts []intTuple
 	for _, i := range a {
 		for _, j := range b {
