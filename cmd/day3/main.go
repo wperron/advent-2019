@@ -18,7 +18,7 @@ type vector struct {
 }
 
 func main() {
-	handle, _ := os.Open("./coordinates.txt")
+	handle, _ := os.Open("./debug.txt")
 	defer handle.Close()
 	scanner := bufio.NewScanner(handle)
 	var paths [][]vector
@@ -42,9 +42,11 @@ func Solve(red []vector, green []vector) int {
 		for _, v2 := range green {
 			cross, intersects := CrossPoint(v1, v2)
 			if intersects {
-				fmt.Println(cross)
 				dist := int(math.Abs(float64(cross.x)) + math.Abs(float64(cross.y)))
-				if dist < short {
+				if short == 0 && dist > 0 {
+					short = dist
+				} else if dist < short {
+					fmt.Println("shortest: ", cross)
 					short = dist
 				}
 			}
