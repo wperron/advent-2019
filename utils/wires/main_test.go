@@ -1,4 +1,4 @@
-package main
+package wires
 
 import (
 	"testing"
