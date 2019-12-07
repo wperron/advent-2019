@@ -3,8 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/wperron/advent/utils/intcode"
-	"github.com/wperron/advent/utils/types"
+	"github.com/wperron/advent/utils/graph"
 	"strings"
 	"os"
 )
@@ -12,37 +11,23 @@ import (
 var TARGET int = 19690720
 
 func main() {
-	handle, _ := os.Open("../resources/Intcode.txt")
+	handle, _ := os.Open("../resources/orbits.txt")
 	defer handle.Close()
 	scanner := bufio.NewScanner(handle)
-	c := make(chan types.IntTuple)
 
-	nouns := types.MakeRange(0, 100)
-	verbs := types.MakeRange(0, 100)
-	permuts := types.Permutations(nouns, verbs)
-
+	gr := graph.Graph{}
 	for scanner.Scan() {
-		seq := types.ToIntSlice(strings.Split(scanner.Text(), ","))
-
-		for _, p := range permuts {
-			go func(seq []int, in types.IntTuple) {
-				copied := make([]int, len(seq))
-				copy(copied, seq)
-
-				copied[1] = in.X
-				copied[2] = in.Y
-
-				res := intcode.Intcode(copied)[0]
-
-				if res == TARGET {
-					c <- in
-					close(c)
-				}
-			}(seq, p)
+		orbit := strings.Split(scanner.Text(), ")")
+		for _, n := range orbit {
+			graph.AddNode(&gr, graph.Node{n})
 		}
-
-		answer := <-c
-
-		fmt.Println("Answer is: ", answer)
+		graph.AddEdge(&gr, graph.Node{orbit[0]}, graph.Node{orbit[1]})
 	}
+
+	fmt.Println("Using graph: ", gr)
+	var total int
+	for _, node := range graph.Nodes(gr) {
+		total += graph.Traverse(gr, node)
+	}
+	fmt.Println(total)
 }

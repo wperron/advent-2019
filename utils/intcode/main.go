@@ -1,6 +1,8 @@
 package intcode
 
-func Intcode(intcode []int) []int {
+func Parse(intcode []int, mode int) []int {
+	// mode 0 => position mode
+	// mode 1 => immediate mode
 	length := len(intcode)
 	for i := 0; i < length; i += 4 {
 		if intcode[i] == 99 {
@@ -16,6 +18,10 @@ func Intcode(intcode []int) []int {
 			intcode[target] = intcode[operands[0]] + intcode[operands[1]]
 		case 2:
 			intcode[target] = intcode[operands[0]] * intcode[operands[1]]
+		case 3:
+			// save input at position
+		case 4:
+			// output value at position
 		default:
 			panic("The opcode is unkown")
 		}
