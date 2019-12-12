@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/wperron/advent/utils/slices"
 	"os"
 	"strconv"
 	"strings"
@@ -27,23 +26,47 @@ func main() {
 		}
 	}
 
-	fmt.Println("Pixels: ", len(pixels))
+	/*
+		0 => black
+		1 => white
+		2 => transparent
+	*/
 
 	var curr []int
-	var fewest, ones, twos int
+	var layers [][]int
 	for len(pixels) > 0 {
 		curr, pixels = pixels[:width*height], pixels[width*height:]
-		zeros := slices.Occurences(curr, 0)
+		layers = append(layers, curr)
+	}
 
-		if zeros < fewest || fewest == 0 {
-			fewest = zeros
+	fmt.Println("first layer: ", layers[0])
 
-			ones = slices.Occurences(curr, 1)
-			twos = slices.Occurences(curr, 2)
+	rendered := make([]int, width*height)
+	for i := 0; i < width*height; i++ {
+		for _, l := range layers {
+			if l[i] == 2 {
+				continue
+			} else {
+				rendered[i] = l[i]
+				break
+			}
 		}
 	}
 
-	fmt.Println("Ones: ", ones)
-	fmt.Println("Twos: ", twos)
-	fmt.Println("Answer: ", ones * twos)
+	// convert layers to more readable characters
+	renderedText := []string{}
+	for _, v := range rendered {
+		if v == 0 {
+			renderedText = append(renderedText, " ")
+		} else {
+			renderedText = append(renderedText, "#")
+		}
+	}
+
+	fmt.Println("Final render: ")
+	var line []string
+	for i := 0; i < height; i++ {
+		line, renderedText = renderedText[:width], renderedText[width:]
+		fmt.Println(strings.Join(line, ""))
+	}
 }
