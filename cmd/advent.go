@@ -3,31 +3,47 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/wperron/advent/utils/graph"
-	"strings"
+	"github.com/wperron/advent/utils/slices"
 	"os"
+	"strconv"
+	"strings"
 )
 
 var TARGET int = 19690720
 
 func main() {
-	handle, _ := os.Open("../resources/orbits.txt")
+	handle, _ := os.Open("../resources/pwd-layers.txt")
 	defer handle.Close()
 	scanner := bufio.NewScanner(handle)
 
-	gr := graph.Graph{}
+	var pixels []int
+	width := 25
+	height := 6
 	for scanner.Scan() {
-		orbit := strings.Split(scanner.Text(), ")")
-		for _, n := range orbit {
-			graph.AddNode(&gr, graph.Node{n})
+		tmp := strings.Split(scanner.Text(), "")
+		for _, p := range tmp {
+			pInt, _ := strconv.Atoi(p)
+			pixels = append(pixels, pInt)
 		}
-		graph.AddEdge(&gr, graph.Node{orbit[0]}, graph.Node{orbit[1]})
 	}
 
-	fmt.Println("Using graph: ", gr)
-	var total int
-	for _, node := range graph.Nodes(gr) {
-		total += graph.Traverse(gr, node)
+	fmt.Println("Pixels: ", len(pixels))
+
+	var curr []int
+	var fewest, ones, twos int
+	for len(pixels) > 0 {
+		curr, pixels = pixels[:width*height], pixels[width*height:]
+		zeros := slices.Occurences(curr, 0)
+
+		if zeros < fewest || fewest == 0 {
+			fewest = zeros
+
+			ones = slices.Occurences(curr, 1)
+			twos = slices.Occurences(curr, 2)
+		}
 	}
-	fmt.Println(total)
+
+	fmt.Println("Ones: ", ones)
+	fmt.Println("Twos: ", twos)
+	fmt.Println("Answer: ", ones * twos)
 }
